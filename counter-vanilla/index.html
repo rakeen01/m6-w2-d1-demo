@@ -1,8 +1,8 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
     <title>Redux basic example</title>
-    <script src="https://unpkg.com/redux@latest/dist/redux.min.js"></script>
+    <script src="https://unpkg.com/redux@4.2.1/dist/redux.min.js"></script>
   </head>
   <body>
     <div>
@@ -15,19 +15,60 @@
       </p>
     </div>
     <script>
+      // reducer setup below
+      function counterReducer(state = 0, action) {
+        switch (action.type) {
+          case "INCREMENT":
+            return state + 1;
+          case "DECREMENT":
+            return state - 1;
+          default:
+            return state;
+        }
+      }
 
-      // write function here
+      // state + UI wiring
+      var counterStore = Redux.createStore(counterReducer);
+      var countNode = document.getElementById("value");
 
-      
-    
+      function updateDisplay() {
+        countNode.textContent = String(counterStore.getState());
+      }
 
-      // setup variables and render function here
+      function sendCountAction(actionType) {
+        counterStore.dispatch({ type: actionType });
+      }
 
-     
+      updateDisplay();
+      counterStore.subscribe(updateDisplay);
 
-      // setup document tags here
-      
-        
+      document
+        .getElementById("increment")
+        .addEventListener("click", function () {
+          sendCountAction("INCREMENT");
+        });
+
+      document
+        .getElementById("decrement")
+        .addEventListener("click", function () {
+          sendCountAction("DECREMENT");
+        });
+
+      document
+        .getElementById("incrementIfOdd")
+        .addEventListener("click", function () {
+          if (counterStore.getState() % 2 !== 0) {
+            sendCountAction("INCREMENT");
+          }
+        });
+
+      document
+        .getElementById("incrementAsync")
+        .addEventListener("click", function () {
+          setTimeout(function () {
+            sendCountAction("INCREMENT");
+          }, 1000);
+        });
     </script>
   </body>
 </html>
